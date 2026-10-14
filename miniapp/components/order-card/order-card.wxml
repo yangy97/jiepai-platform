@@ -1,0 +1,46 @@
+<!--
+  components/order-card/order-card.wxml
+  职责：订单卡片。展示类目 emoji、标题、地址、金额、状态标签、时间。
+  点击整卡向外触发 tap（由页面 bind:tap 处理跳转详情）。
+-->
+<view class="order-card" bindtap="handleTap">
+  <!-- 头部：类目 + 标题 + 状态 -->
+  <view class="order-card__head">
+    <view class="order-card__cat">
+      <text class="order-card__icon">{{order.category_icon || '🔧'}}</text>
+      <text class="order-card__cat-name">{{order.category_name || '服务'}}</text>
+      <!-- 自定义服务类型标记 -->
+      <text class="order-card__custom" wx:if="{{order.is_custom}}">自定义</text>
+      <!-- 待支付标记（仅下单客户本人可见） -->
+      <text class="order-card__pay" wx:if="{{showPayBadge}}">待支付</text>
+    </view>
+    <text class="order-card__status {{statusCls}}">{{statusText}}</text>
+  </view>
+
+  <view class="order-card__title">{{order.title || '（无标题）'}}</view>
+
+  <view class="order-card__row" wx:if="{{order.address}}">
+    <text class="order-card__row-icon">📍</text>
+    <text class="order-card__row-text">{{order.address}}</text>
+  </view>
+  <view class="order-card__row" wx:if="{{order.expect_at}}">
+    <text class="order-card__row-icon">⏰</text>
+    <text class="order-card__row-text">期望上门 {{order.expect_at}}</text>
+  </view>
+  <view class="order-card__row" wx:if="{{order.worker_name}}">
+    <text class="order-card__row-icon">👷</text>
+    <text class="order-card__row-text">师傅 {{order.worker_name}}</text>
+  </view>
+
+  <!-- 底部：单号/时间 + 金额 -->
+  <view class="order-card__foot">
+    <view class="order-card__foot-left">
+      <text class="order-card__no">{{order.order_no || ''}}</text>
+      <text class="order-card__time">{{order.created_at || ''}}</text>
+    </view>
+    <view class="order-card__price">
+      <text class="order-card__price-label">预算</text>
+      <text class="order-card__price-val">¥{{priceText}}</text>
+    </view>
+  </view>
+</view>

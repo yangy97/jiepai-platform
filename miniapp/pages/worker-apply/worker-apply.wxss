@@ -1,0 +1,157 @@
+/* pages/worker-apply/worker-apply.wxss —— 师傅入驻认证 */
+
+.ph {
+  color: #b6bbc6;
+}
+
+.wa__hero {
+  margin: 20rpx 24rpx 0;
+  padding: 34rpx 32rpx;
+  border-radius: 16rpx;
+  background: linear-gradient(135deg, #ff8a5c, #ff6a3d);
+  color: #ffffff;
+}
+.wa__hero-title {
+  font-size: 36rpx;
+  font-weight: 800;
+}
+.wa__hero-desc {
+  font-size: 24rpx;
+  opacity: 0.92;
+  margin-top: 8rpx;
+}
+
+.wa__form {
+  padding: 8rpx 24rpx;
+}
+.form-item--col {
+  flex-direction: column;
+}
+.form-item--col .form-item__label {
+  width: auto;
+  margin-bottom: 12rpx;
+}
+.wa__picker {
+  font-size: 28rpx;
+  color: #1f2430;
+}
+.wa__textarea {
+  width: 100%;
+  min-height: 150rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+.wa__skills-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22rpx 0 12rpx;
+}
+.wa__skills-count {
+  font-size: 24rpx;
+  color: #ff6a3d;
+}
+.wa__skills {
+  display: flex;
+  flex-wrap: wrap;
+  padding-bottom: 12rpx;
+}
+.wa__skill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: calc(50% - 10rpx);
+  margin: 0 10rpx 16rpx 0;
+  background: #f5f6f8;
+  border: 3rpx solid transparent;
+  border-radius: 14rpx;
+  padding: 18rpx 20rpx;
+}
+.wa__skill:nth-child(2n) {
+  margin-right: 0;
+}
+.wa__skill.is-active {
+  background: #fff4f0;
+  border-color: #ff6a3d;
+}
+.wa__skill-icon {
+  font-size: 34rpx;
+  margin-right: 12rpx;
+}
+.wa__skill-name {
+  flex: 1;
+  font-size: 26rpx;
+}
+.wa__skill.is-active .wa__skill-name {
+  color: #ff6a3d;
+  font-weight: 700;
+}
+.wa__skill-check {
+  color: #ff6a3d;
+  font-weight: 800;
+  font-size: 28rpx;
+}
+
+.wa__submit-wrap {
+  padding: 12rpx 24rpx 40rpx;
+}
+.wa__submit-tip {
+  text-align: center;
+  font-size: 23rpx;
+  color: #8a90a0;
+  margin-top: 18rpx;
+}
+
+/* 状态卡片 */
+.wa__status {
+  margin: 24rpx;
+  padding: 48rpx 32rpx;
+  border-radius: 16rpx;
+  background: #ffffff;
+  text-align: center;
+}
+.wa__status--ok {
+  background: linear-gradient(160deg, #eafaf0, #ffffff);
+}
+.wa__status--wait {
+  background: linear-gradient(160deg, #fff8e8, #ffffff);
+}
+.wa__status--no {
+  background: linear-gradient(160deg, #fff1f0, #ffffff);
+}
+.wa__status-icon {
+  font-size: 88rpx;
+}
+.wa__status-title {
+  font-size: 36rpx;
+  font-weight: 800;
+  margin-top: 16rpx;
+}
+.wa__status-desc {
+  font-size: 26rpx;
+  color: #5b6172;
+  margin-top: 12rpx;
+}
+.wa__status-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20rpx;
+}
+.wa__tag {
+  background: #f5f6f8;
+  color: #5b6172;
+  font-size: 23rpx;
+  border-radius: 20rpx;
+  padding: 8rpx 20rpx;
+  margin: 6rpx 8rpx;
+}
+.wa__status-tip {
+  font-size: 23rpx;
+  color: #8a90a0;
+  margin-top: 22rpx;
+}
+.wa__status-btn {
+  margin-top: 32rpx;
+}

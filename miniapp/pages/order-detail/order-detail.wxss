@@ -1,0 +1,564 @@
+/* pages/order-detail/order-detail.wxss —— 订单详情 */
+
+.ph {
+  color: #b6bbc6;
+}
+
+/* 状态头 */
+.od__head {
+  background: linear-gradient(135deg, #ff8a5c, #ff6a3d);
+  color: #ffffff;
+  padding: 40rpx 32rpx 44rpx;
+}
+.od__head-status {
+  display: inline-flex;
+  align-items: center;
+  height: 56rpx;
+  padding: 0 26rpx;
+  border-radius: 28rpx;
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 30rpx;
+  font-weight: 800;
+}
+.od__head-status.st-pending { color: #f08c00; }
+.od__head-status.st-dispatched { color: #2f6fed; }
+.od__head-status.st-accepted { color: #12a05c; }
+.od__head-status.st-working { color: #1677ff; }
+.od__head-status.st-finished { color: #7c4dff; }
+.od__head-status.st-completed { color: #0f9d58; }
+.od__head-status.st-aborted { color: #e8590c; }
+.od__head-status.st-cancelled { color: #8a90a0; }
+
+.od__head-no {
+  margin-top: 22rpx;
+  font-size: 25rpx;
+  opacity: 0.95;
+}
+.od__copy {
+  margin-left: 14rpx;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 10rpx;
+  padding: 4rpx 14rpx;
+  font-size: 22rpx;
+}
+.od__head-reason,
+.od__head-rating {
+  margin-top: 16rpx;
+  font-size: 24rpx;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 12rpx;
+  padding: 12rpx 16rpx;
+}
+.od__head-reason--warn {
+  background: rgba(255, 236, 210, 0.28);
+}
+/* 评价展示（头部）：总分 + 三维小字 + 标签 chips + 评论 */
+.od__head-rate-main {
+  font-weight: 700;
+}
+.od__head-rate-dims {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  opacity: 0.95;
+}
+.od__head-rate-tags {
+  margin-top: 10rpx;
+  display: flex;
+  flex-wrap: wrap;
+}
+.od__head-rate-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 34rpx;
+  padding: 0 14rpx;
+  margin: 0 10rpx 8rpx 0;
+  background: rgba(255, 255, 255, 0.24);
+  border-radius: 17rpx;
+  font-size: 21rpx;
+}
+.od__head-rate-comment {
+  margin-top: 8rpx;
+  font-size: 23rpx;
+  opacity: 0.95;
+}
+
+/* 服务信息 */
+.od__card {
+  margin-top: -20rpx;
+  position: relative;
+  z-index: 2;
+}
+.od__head + .od__card {
+  margin-top: -24rpx;
+}
+.od__svc {
+  display: flex;
+  align-items: center;
+}
+.od__svc-icon {
+  font-size: 56rpx;
+  margin-right: 20rpx;
+}
+.od__svc-info {
+  flex: 1;
+}
+.od__svc-title {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+.od__svc-cat {
+  font-size: 24rpx;
+  color: #8a90a0;
+  margin-top: 4rpx;
+}
+.od__svc-amount {
+  text-align: right;
+}
+.od__svc-amount-label {
+  font-size: 22rpx;
+  color: #8a90a0;
+}
+.od__svc-amount-val {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #ff6a3d;
+}
+.od__desc {
+  margin-top: 18rpx;
+  padding: 18rpx;
+  background: #f8f9fb;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+  color: #5b6172;
+  line-height: 1.7;
+}
+.od__line {
+  display: flex;
+  align-items: center;
+  margin-top: 18rpx;
+}
+.od__card.od__line {
+  margin-top: 20rpx;
+}
+.od__line-icon {
+  margin-right: 12rpx;
+  font-size: 26rpx;
+}
+.od__line-text {
+  font-size: 27rpx;
+  color: #1f2430;
+}
+.od__line-text--flex {
+  flex: 1;
+}
+/* 超预约时间警示 */
+.od__line-text--warn {
+  color: #e8590c;
+  font-weight: 600;
+}
+.od__line-arrow {
+  font-size: 24rpx;
+  color: #ff6a3d;
+}
+/* 「查看位置」小按钮（有坐标才显示） */
+.od__line-map {
+  flex-shrink: 0;
+  padding: 8rpx 18rpx;
+  background: #fff4f0;
+  border: 2rpx solid #ffe1d7;
+  border-radius: 12rpx;
+  color: #ff6a3d;
+  font-size: 23rpx;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.od__line-map:active {
+  background: #ffe1d7;
+}
+/* 「自定义」小标签 */
+.od__custom-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 34rpx;
+  padding: 0 14rpx;
+  margin-left: 12rpx;
+  background: #f3ecff;
+  color: #7c4dff;
+  border-radius: 17rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* 参与方 */
+.od__party-title {
+  font-size: 27rpx;
+  font-weight: 700;
+  color: #1f2430;
+  margin-bottom: 18rpx;
+}
+.od__party {
+  display: flex;
+  align-items: center;
+}
+.od__party-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffd7c9, #ffb3a0);
+  color: #ff6a3d;
+  font-size: 34rpx;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+.od__party-avatar--worker {
+  background: linear-gradient(135deg, #d7e6ff, #b8d0ff);
+  color: #2f6fed;
+}
+.od__party-info {
+  flex: 1;
+}
+.od__party-name {
+  font-size: 29rpx;
+  font-weight: 600;
+}
+.od__party-phone {
+  font-size: 24rpx;
+  color: #8a90a0;
+  margin-top: 4rpx;
+}
+.od__party-call {
+  background: #fff4f0;
+  color: #ff6a3d;
+  border-radius: 30rpx;
+  font-size: 25rpx;
+  padding: 12rpx 26rpx;
+}
+
+/* 时间线 */
+.od__timeline {
+  padding-top: 8rpx;
+}
+.od__tl-item {
+  display: flex;
+  position: relative;
+  padding-bottom: 30rpx;
+}
+.od__tl-item::before {
+  content: "";
+  position: absolute;
+  left: 11rpx;
+  top: 24rpx;
+  bottom: -4rpx;
+  width: 3rpx;
+  background: #eceef2;
+}
+.od__tl-item:last-child::before {
+  display: none;
+}
+.od__tl-dot {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 50%;
+  background: #d9dce3;
+  margin-right: 24rpx;
+  margin-top: 6rpx;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.od__tl-dot.is-first {
+  background: #ff6a3d;
+  box-shadow: 0 0 0 6rpx rgba(255, 106, 61, 0.18);
+}
+.od__tl-body {
+  flex: 1;
+}
+.od__tl-content {
+  font-size: 27rpx;
+  color: #1f2430;
+}
+.od__tl-meta {
+  font-size: 23rpx;
+  color: #b6bbc6;
+  margin-top: 6rpx;
+}
+
+.od__holder {
+  height: 180rpx;
+}
+/* 有支付卡片时加高占位，避免遮挡内容（卡片高度 + 与操作栏间距） */
+.od__holder--pay {
+  height: 340rpx;
+}
+
+/* 底部操作栏 */
+.od__bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  padding: 16rpx 24rpx calc(16rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -6rpx 20rpx rgba(31, 36, 48, 0.08);
+  z-index: 30;
+}
+.od__bar-half {
+  flex: 1;
+  margin: 0 10rpx;
+}
+.od__bar .btn--block {
+  width: 100%;
+}
+
+/* 支付状态徽标（订单信息区，复用状态标签风格） */
+.od__pay-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 34rpx;
+  padding: 0 16rpx;
+  margin-left: 8rpx;
+  border-radius: 17rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.od__pay-badge--warning {
+  background: #fff4e0;
+  color: #f08c00;
+}
+.od__pay-badge--success {
+  background: #e9f6ee;
+  color: #0f9d58;
+}
+.od__pay-badge--info {
+  background: #e8f1ff;
+  color: #2f6fed;
+}
+
+/* 资金明细卡 */
+.od__fin-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 18rpx 0;
+  border-bottom: 2rpx solid #f1f2f4;
+}
+.od__fin-row:last-child {
+  border-bottom: none;
+  padding-bottom: 4rpx;
+}
+.od__fin-label {
+  flex-shrink: 0;
+  width: 150rpx;
+  font-size: 26rpx;
+  color: #8a90a0;
+}
+.od__fin-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 0;
+}
+.od__fin-val {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1f2430;
+}
+.od__fin-val--hl {
+  color: #ff6a3d;
+}
+.od__fin-val--refund {
+  color: #2f6fed;
+}
+.od__fin-text {
+  font-size: 27rpx;
+  color: #1f2430;
+}
+.od__fin-sub {
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #b6bbc6;
+  text-align: right;
+}
+/* 退款政策只读 pill */
+.od__fin-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 40rpx;
+  padding: 0 18rpx;
+  background: #eaf7f0;
+  color: #12a05c;
+  border-radius: 20rpx;
+  font-size: 23rpx;
+  font-weight: 600;
+}
+.od__fin-pill.is-strict {
+  background: #fff4e0;
+  color: #e8590c;
+}
+
+/* 支付卡片（固定在底部操作栏上方） */
+.od__pay-card {
+  position: fixed;
+  left: 0;
+  right: 0;
+  /* 操作栏高度 = 16 + 88 + 16 = 120rpx，再留 16rpx 间距 */
+  bottom: calc(136rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 18rpx 24rpx;
+  box-shadow: 0 -6rpx 20rpx rgba(31, 36, 48, 0.08);
+  z-index: 29;
+}
+.od__pay-info {
+  flex: 1;
+  min-width: 0;
+}
+.od__pay-label {
+  font-size: 22rpx;
+  color: #8a90a0;
+}
+.od__pay-amount {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #ff6a3d;
+}
+.od__pay-btn {
+  flex-shrink: 0;
+  min-width: 220rpx;
+  margin: 0;
+}
+
+/* 弹层内容 */
+.od__budget {
+  display: flex;
+  align-items: center;
+}
+.od__budget-symbol {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #ff6a3d;
+  margin-right: 10rpx;
+}
+.od__budget input {
+  flex: 1;
+}
+.od__popup-tip {
+  font-size: 23rpx;
+  color: #8a90a0;
+  margin: 12rpx 0 24rpx;
+}
+.od__popup-btn2 {
+  margin-top: 16rpx;
+}
+.form-item--col {
+  flex-direction: column;
+}
+.form-item--col .form-item__label {
+  width: auto;
+  margin-bottom: 12rpx;
+}
+
+/* 评价星星 */
+.od__stars {
+  display: flex;
+  justify-content: center;
+  margin: 10rpx 0 8rpx;
+}
+.od__star {
+  font-size: 72rpx;
+  color: #e3e5ea;
+  margin: 0 10rpx;
+}
+.od__star.is-on {
+  color: #ffb020;
+}
+.od__stars-text {
+  text-align: center;
+  font-size: 25rpx;
+  color: #8a90a0;
+  margin-bottom: 20rpx;
+}
+
+/* 评价三维星级（技术 / 态度 / 准时） */
+.od__dim {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8rpx;
+}
+.od__dim-label {
+  width: 90rpx;
+  flex-shrink: 0;
+  font-size: 27rpx;
+  color: #1f2430;
+}
+.od__dim-stars {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+.od__star--sm {
+  font-size: 44rpx;
+  margin: 0 8rpx;
+}
+.od__dim-val {
+  width: 90rpx;
+  text-align: right;
+  font-size: 23rpx;
+  color: #8a90a0;
+}
+
+/* 快捷标签 chips（≤3） */
+.od__tags-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 18rpx 0 14rpx;
+}
+.od__tags-title {
+  font-size: 27rpx;
+  color: #1f2430;
+  font-weight: 600;
+}
+.od__tags-count {
+  font-size: 22rpx;
+  color: #b6bbc6;
+}
+.od__tags {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -6rpx 8rpx;
+}
+.od__tag {
+  margin: 0 6rpx 14rpx;
+  padding: 12rpx 24rpx;
+  background: #f5f6f8;
+  border: 3rpx solid transparent;
+  border-radius: 26rpx;
+  font-size: 25rpx;
+  color: #5b6172;
+}
+.od__tag.is-on {
+  background: #fff4f0;
+  border-color: #ff6a3d;
+  color: #ff6a3d;
+  font-weight: 600;
+}
+
+/* 中途退出弹层：hourly 单「按时长自动计算」不可输入 */
+.od__hourly-note {
+  font-size: 27rpx;
+  color: #1f2430;
+  background: #f8f9fb;
+  border: 2rpx dashed #d9dce3;
+  border-radius: 12rpx;
+  padding: 18rpx 20rpx;
+}

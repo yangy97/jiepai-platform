@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "接派·上门服务",
+  "enablePullDownRefresh": true,
+  "backgroundTextStyle": "dark",
+  "usingComponents": {
+    "order-card": "/components/order-card/order-card"
+  }
+}

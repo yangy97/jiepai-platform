@@ -1,0 +1,134 @@
+/* components/order-card/order-card.wxss —— 订单卡片样式 */
+
+.order-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin: 0 24rpx 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(31, 36, 48, 0.04);
+}
+.order-card:active {
+  background: #fafbfc;
+}
+
+.order-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14rpx;
+}
+.order-card__cat {
+  display: flex;
+  align-items: center;
+}
+.order-card__icon {
+  font-size: 34rpx;
+  margin-right: 10rpx;
+}
+.order-card__cat-name {
+  font-size: 26rpx;
+  color: #8a90a0;
+}
+/* 「自定义」小标签 */
+.order-card__custom {
+  display: inline-flex;
+  align-items: center;
+  height: 34rpx;
+  padding: 0 14rpx;
+  margin-left: 10rpx;
+  background: #f3ecff;
+  color: #7c4dff;
+  border-radius: 17rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+/* 「待支付」小标签（与自定义标签同风格，warning 色） */
+.order-card__pay {
+  display: inline-flex;
+  align-items: center;
+  height: 34rpx;
+  padding: 0 14rpx;
+  margin-left: 10rpx;
+  background: #fff4e0;
+  color: #f08c00;
+  border-radius: 17rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+.order-card__status {
+  display: inline-flex;
+  align-items: center;
+  height: 44rpx;
+  padding: 0 18rpx;
+  border-radius: 22rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+}
+.st-pending { background: #fff4e0; color: #f08c00; }
+.st-dispatched { background: #e8f1ff; color: #2f6fed; }
+.st-accepted { background: #eaf7f0; color: #12a05c; }
+.st-working { background: #eaf3ff; color: #1677ff; }
+.st-finished { background: #f3ecff; color: #7c4dff; }
+.st-completed { background: #e9f6ee; color: #0f9d58; }
+.st-cancelled { background: #f1f2f4; color: #8a90a0; }
+
+.order-card__title {
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1f2430;
+  margin-bottom: 12rpx;
+}
+
+.order-card__row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 8rpx;
+}
+.order-card__row-icon {
+  font-size: 24rpx;
+  margin-right: 10rpx;
+  line-height: 1.5;
+}
+.order-card__row-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #5b6172;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-card__foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f1f2f4;
+}
+.order-card__foot-left {
+  display: flex;
+  flex-direction: column;
+}
+.order-card__no {
+  font-size: 22rpx;
+  color: #b6bbc6;
+}
+.order-card__time {
+  font-size: 22rpx;
+  color: #b6bbc6;
+}
+.order-card__price {
+  display: flex;
+  align-items: baseline;
+}
+.order-card__price-label {
+  font-size: 22rpx;
+  color: #8a90a0;
+  margin-right: 6rpx;
+}
+.order-card__price-val {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #ff6a3d;
+}

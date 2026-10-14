@@ -1,0 +1,155 @@
+<!-- pages/order-create/order-create.wxml —— 发布需求 -->
+<view class="page oc">
+
+  <view class="loading" wx:if="{{loading}}"><view class="loading__spin"></view>加载类目…</view>
+
+  <block wx:else>
+    <!-- 类目横滑选择 -->
+    <view class="oc__cats-wrap">
+      <scroll-view class="oc__cats" scroll-x enable-flex>
+        <view class="oc__cat {{category && category.id === item.id ? 'is-active' : ''}}"
+              wx:for="{{categories}}" wx:key="id"
+              data-id="{{item.id}}" bindtap="chooseCategory">
+          <text class="oc__cat-icon">{{item.icon}}</text>
+          <text class="oc__cat-name">{{item.name}}</text>
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 所选类目提示 -->
+    <view class="oc__picked" wx:if="{{category}}">
+      <text class="oc__picked-icon">{{category.icon}}</text>
+      <view class="oc__picked-info">
+        <view class="oc__picked-name">
+          {{category.name}}
+          <text class="oc__picked-tag" wx:if="{{isCustom}}">自定义</text>
+        </view>
+        <view class="oc__picked-desc">{{isCustom ? '费用按实际报价，师傅接单前可沟通' : (category.description || '专业师傅上门服务')}}</view>
+      </view>
+      <view class="oc__picked-price" wx:if="{{!isCustom}}">¥{{category.min_price_text}}<text class="oc__picked-unit">/{{category.unit}}</text></view>
+      <view class="oc__picked-quote" wx:else>按需报价</view>
+    </view>
+
+    <!-- 表单 -->
+    <view class="card oc__form">
+      <!-- 自定义服务类型 -->
+      <view class="form-item" wx:if="{{isCustom}}">
+        <view class="form-item__label form-item__label--req">服务类型</view>
+        <view class="form-item__control">
+          <input placeholder="如：宠物寄养、古琴搬运" placeholder-class="ph" maxlength="30"
+                 value="{{customCategory}}" data-key="customCategory" bindinput="onInput" />
+        </view>
+      </view>
+
+      <view class="form-item">
+        <view class="form-item__label form-item__label--req">需求标题</view>
+        <view class="form-item__control">
+          <input placeholder="如：油烟机深度清洗" placeholder-class="ph" maxlength="50"
+                 value="{{title}}" data-key="title" bindinput="onInput" />
+        </view>
+      </view>
+
+      <view class="form-item form-item--col">
+        <view class="form-item__label">详细描述</view>
+        <view class="form-item__control">
+          <textarea class="oc__textarea" placeholder="描述一下具体情况、尺寸、特殊要求等（选填）" placeholder-class="ph"
+                    maxlength="500" value="{{description}}" data-key="description" bindinput="onInput"></textarea>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <view class="form-item__label form-item__label--req">上门地址</view>
+        <view class="form-item__control">
+          <view class="oc__addr">
+            <input placeholder="省市区 + 详细门牌地址" placeholder-class="ph" maxlength="100"
+                   value="{{address}}" data-key="address" bindinput="onInput" />
+            <view class="oc__addr-map" bindtap="chooseLocation">📍 地图选点</view>
+          </view>
+          <view class="oc__coords" wx:if="{{lat && lng}}">已选坐标 {{coordText}}</view>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <view class="form-item__label">期望时间</view>
+        <view class="form-item__control">
+          <picker mode="datetime" value="{{expectValue}}" bindchange="onTimeChange">
+            <view class="oc__picker {{expectAt ? '' : 'is-empty'}}">
+              {{expectAt || '请选择期望上门时间（选填）'}}
+            </view>
+          </picker>
+        </view>
+      </view>
+
+      <!-- 退款政策（下单锁定，不可修改） -->
+      <view class="form-item form-item--col">
+        <view class="form-item__label">退款政策</view>
+        <view class="form-item__control">
+          <view class="oc__opts">
+            <view class="oc__opt {{refundPolicy === 'flexible' ? 'is-active' : ''}}"
+                  data-val="flexible" bindtap="chooseRefundPolicy">支持中途退款</view>
+            <view class="oc__opt {{refundPolicy === 'strict' ? 'is-active' : ''}}"
+                  data-val="strict" bindtap="chooseRefundPolicy">不可中途退款</view>
+          </view>
+          <view class="oc__opt-hint">开工前均可全额退款；开工后按所选政策执行。</view>
+        </view>
+      </view>
+
+      <!-- 计费方式（一口价 / 按时计费） -->
+      <view class="form-item form-item--col">
+        <view class="form-item__label">计费方式</view>
+        <view class="form-item__control">
+          <view class="oc__opts">
+            <view class="oc__opt {{billingType === 'fixed' ? 'is-active' : ''}}"
+                  data-val="fixed" bindtap="chooseBillingType">一口价</view>
+            <view class="oc__opt {{billingType === 'hourly' ? 'is-active' : ''}}"
+                  data-val="hourly" bindtap="chooseBillingType">按时计费</view>
+          </view>
+          <view class="oc__opt-hint">按时计费按实际服务时长结算，中途退出按半小时向上取整。</view>
+        </view>
+      </view>
+
+      <!-- 时薪（选按时计费时必填） -->
+      <view class="form-item" wx:if="{{billingType === 'hourly'}}">
+        <view class="form-item__label form-item__label--req">时薪</view>
+        <view class="form-item__control oc__budget">
+          <text class="oc__budget-symbol">¥</text>
+          <input type="digit" placeholder="请输入时薪（元/小时）" placeholder-class="ph"
+                 value="{{hourlyPrice}}" data-key="hourlyPrice" bindinput="onInput" />
+          <text class="oc__hourly-unit">元/小时</text>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <view class="form-item__label form-item__label--req">{{billingType === 'hourly' ? '预计总费用' : '预算金额'}}</view>
+        <view class="form-item__control oc__budget">
+          <text class="oc__budget-symbol">¥</text>
+          <input type="digit" placeholder="{{billingType === 'hourly' ? '请输入预计总费用' : '请输入预算金额'}}" placeholder-class="ph"
+                 value="{{budget}}" data-key="budget" bindinput="onInput" />
+        </view>
+        <view class="oc__budget-hint" wx:if="{{billingType === 'hourly'}}">预计总费用（时薪×预估时长）</view>
+        <view class="oc__budget-hint" wx:elif="{{category && !isCustom}}">已按该服务起步价自动预填，可直接修改</view>
+      </view>
+    </view>
+
+    <view class="oc__tip">提交后平台将为您快速匹配附近师傅，实际价格以完工确认为准。</view>
+
+    <!-- 底部提交栏 -->
+    <view class="oc__bar">
+      <view class="oc__bar-price" wx:if="{{category && !isCustom}}">
+        <text class="oc__bar-label">起步价</text>
+        <text class="oc__bar-val">¥{{category.min_price_text}}/{{category.unit}}</text>
+      </view>
+      <view class="oc__bar-price" wx:elif="{{isCustom}}">
+        <text class="oc__bar-label">费用</text>
+        <text class="oc__bar-val oc__bar-val--custom">按实际报价，师傅接单前可沟通</text>
+      </view>
+      <button class="btn btn--primary oc__bar-btn" disabled="{{submitting}}" bindtap="submit">
+        {{submitting ? '提交中…' : '提交需求'}}
+      </button>
+    </view>
+    <view class="oc__bar-holder"></view>
+  </block>
+</view>
+
+<!-- 订阅消息说明弹窗（docs/changes/008 · 下单成功节点，7 天频控） -->
+<subscribe-guide wx:if="{{guideVisible}}" mode="modal" bind:done="onGuideDone" />

@@ -1,0 +1,455 @@
+<!-- pages/order-detail/order-detail.wxml —— 订单详情 + 状态流转 -->
+<view class="page od">
+
+  <view class="loading" wx:if="{{loading}}"><view class="loading__spin"></view>加载中…</view>
+
+  <block wx:elif="{{order}}">
+    <!-- 状态头 -->
+    <view class="od__head">
+      <view class="od__head-status {{statusCls}}">{{statusText}}</view>
+      <view class="od__head-no" bindtap="copyOrderNo">
+        单号 {{order.order_no}} <text class="od__copy">📋 复制</text>
+      </view>
+      <view class="od__head-reason" wx:if="{{order.status === 'cancelled' && order.cancel_reason}}">
+        取消原因：{{order.cancel_reason}}
+      </view>
+      <view class="od__head-reason od__head-reason--warn" wx:if="{{order.status === 'aborted' && order.abort_reason}}">
+        中止原因：{{order.abort_reason}}
+      </view>
+      <!-- 客户看「我的评价」（总分 + 三维小字 + 标签 chips + 评论） -->
+      <view class="od__head-rating" wx:if="{{isOwner && myRate}}">
+        <view class="od__head-rate-main">我的评价：{{myRate.rating}} ★</view>
+        <view class="od__head-rate-dims" wx:if="{{myRate.hasDims}}">
+          技术 {{myRate.skill}} · 态度 {{myRate.attitude}} · 准时 {{myRate.punctual}}
+        </view>
+        <view class="od__head-rate-tags" wx:if="{{myRate.tags.length}}">
+          <text class="od__head-rate-tag" wx:for="{{myRate.tags}}" wx:key="*this">{{item}}</text>
+        </view>
+        <view class="od__head-rate-comment" wx:if="{{myRate.comment}}">{{myRate.comment}}</view>
+      </view>
+      <!-- 师傅看「我对客户的评价」 -->
+      <view class="od__head-rating" wx:if="{{isWorker && myWorkerRate}}">
+        <view class="od__head-rate-main">我对客户的评价：{{myWorkerRate.rating}} ★</view>
+        <view class="od__head-rate-tags" wx:if="{{myWorkerRate.tags.length}}">
+          <text class="od__head-rate-tag" wx:for="{{myWorkerRate.tags}}" wx:key="*this">{{item}}</text>
+        </view>
+        <view class="od__head-rate-comment" wx:if="{{myWorkerRate.comment}}">{{myWorkerRate.comment}}</view>
+      </view>
+    </view>
+
+    <!-- 服务信息 -->
+    <view class="card od__card">
+      <view class="od__svc">
+        <text class="od__svc-icon">{{category.icon || order.category_icon || '🔧'}}</text>
+        <view class="od__svc-info">
+          <view class="od__svc-title">{{order.title}}</view>
+          <view class="od__svc-cat">
+            {{category.name || order.category_name}}
+            <!-- 自定义服务类型标记 -->
+            <text class="od__custom-tag" wx:if="{{order.is_custom}}">自定义</text>
+          </view>
+        </view>
+        <view class="od__svc-amount">
+          <view class="od__svc-amount-label">{{order.price > 0 ? '结算金额' : '预算金额'}}</view>
+          <view class="od__svc-amount-val">¥{{order.price > 0 ? order.price : order.budget}}</view>
+        </view>
+      </view>
+      <view class="od__desc" wx:if="{{order.description}}">{{order.description}}</view>
+
+      <!-- 支付状态徽标（仅下单客户可见：待支付 / 已支付 / 已退款；金额与时间见「资金明细」） -->
+      <view class="od__line" wx:if="{{isOwner && payBadge}}">
+        <text class="od__line-icon">💰</text>
+        <text class="od__line-text">支付状态</text>
+        <text class="od__pay-badge od__pay-badge--{{payBadge.cls}}">{{payBadge.text}}</text>
+      </view>
+
+      <!-- 守时倒计时（accepted + expect_at，客户与师傅双方可见） -->
+      <view class="od__line" wx:if="{{countdownText}}">
+        <text class="od__line-icon">⏳</text>
+        <text class="od__line-text {{countdownOverdue ? 'od__line-text--warn' : ''}}">{{countdownText}}</text>
+      </view>
+
+      <view class="od__line" wx:if="{{order.expect_at}}">
+        <text class="od__line-icon">⏰</text>
+        <text class="od__line-text">期望上门：{{order.expect_at}}</text>
+      </view>
+      <view class="od__line" wx:if="{{order.service_fee > 0}}">
+        <text class="od__line-icon">💳</text>
+        <text class="od__line-text">平台服务费：¥{{order.service_fee}}</text>
+      </view>
+    </view>
+
+    <!-- ================= 资金明细（字段存在才渲染；与上方支付状态徽标不重复） ================= -->
+    <view class="card od__card" wx:if="{{showFinance && finance}}">
+      <view class="od__party-title">🧾 资金明细</view>
+      <view class="od__fin-row" wx:if="{{finance.paidAt}}">
+        <text class="od__fin-label">支付金额</text>
+        <view class="od__fin-right">
+          <text class="od__fin-val">¥{{finance.paidAmount}}</text>
+          <text class="od__fin-sub">{{finance.paidAt}} 支付</text>
+        </view>
+      </view>
+      <view class="od__fin-row" wx:if="{{finance.actualFee !== ''}}">
+        <text class="od__fin-label">实收金额</text>
+        <view class="od__fin-right">
+          <text class="od__fin-val od__fin-val--hl">¥{{finance.actualFee}}</text>
+          <text class="od__fin-sub" wx:if="{{order.status === 'aborted'}}">中途结束，待确认结算</text>
+        </view>
+      </view>
+      <view class="od__fin-row" wx:if="{{finance.refundAmount}}">
+        <text class="od__fin-label">退款金额</text>
+        <view class="od__fin-right">
+          <text class="od__fin-val od__fin-val--refund">-¥{{finance.refundAmount}}</text>
+          <text class="od__fin-sub">{{finance.refundReason ? finance.refundReason + ' · ' : ''}}{{finance.refundedAt}}</text>
+        </view>
+      </view>
+      <view class="od__fin-row" wx:if="{{finance.policyText}}">
+        <text class="od__fin-label">退款政策</text>
+        <view class="od__fin-right">
+          <text class="od__fin-pill {{order.refund_policy === 'strict' ? 'is-strict' : ''}}">{{finance.policyText}}</text>
+          <text class="od__fin-sub">下单锁定，只读</text>
+        </view>
+      </view>
+      <view class="od__fin-row" wx:if="{{finance.billingText}}">
+        <text class="od__fin-label">计费方式</text>
+        <view class="od__fin-right">
+          <text class="od__fin-text">{{finance.billingText}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- ================= 中途结束信息（aborted）：开工 → 中止、时长、原因 ================= -->
+    <view class="card od__card" wx:if="{{abortInfo}}">
+      <view class="od__party-title">⚡ 中途结束信息</view>
+      <view class="od__line" wx:if="{{abortInfo.startedAt || abortInfo.abortedAt}}">
+        <text class="od__line-icon">⏱️</text>
+        <text class="od__line-text">开工 {{abortInfo.startedAt || '—'}} → 中止 {{abortInfo.abortedAt || '—'}}</text>
+      </view>
+      <view class="od__line" wx:if="{{abortInfo.durationText}}">
+        <text class="od__line-icon">⌛</text>
+        <text class="od__line-text">服务时长：{{abortInfo.durationText}}</text>
+      </view>
+      <view class="od__line" wx:if="{{abortInfo.reason}}">
+        <text class="od__line-icon">📝</text>
+        <text class="od__line-text">中止原因：{{abortInfo.reason}}</text>
+      </view>
+    </view>
+
+    <!-- 地址（有坐标时可查看位置） -->
+    <view class="card od__card od__line" bindtap="openMap">
+      <text class="od__line-icon">📍</text>
+      <text class="od__line-text od__line-text--flex">{{order.address || '未填写地址'}}</text>
+      <text class="od__line-map" wx:if="{{order.lat && order.lng}}">查看位置</text>
+      <text class="od__line-arrow" wx:else>{{order.lat ? '导航 ›' : ''}}</text>
+    </view>
+
+    <!-- 客户信息 -->
+    <view class="card od__card" wx:if="{{customer}}">
+      <view class="od__party-title">🧑‍💼 客户</view>
+      <view class="od__party">
+        <view class="od__party-avatar">{{customer._first}}</view>
+        <view class="od__party-info">
+          <view class="od__party-name">{{customer.name || '客户'}}</view>
+          <view class="od__party-phone">{{customer.phone}}</view>
+        </view>
+        <view class="od__party-call" wx:if="{{role === 'worker' && customer.phone}}" data-phone="{{customer.phone}}" bindtap="callPhone">📞 拨打</view>
+      </view>
+    </view>
+
+    <!-- 师傅信息 -->
+    <view class="card od__card" wx:if="{{worker || order.worker_name}}">
+      <view class="od__party-title">👷 师傅</view>
+      <view class="od__party">
+        <view class="od__party-avatar od__party-avatar--worker">{{worker ? worker._first : '师'}}</view>
+        <view class="od__party-info">
+          <view class="od__party-name">{{worker.real_name || order.worker_name}}</view>
+          <view class="od__party-phone" wx:if="{{worker}}">
+            从业{{worker.years}}年 · 累计{{worker.order_count}}单 · 评分{{worker.rating}}
+          </view>
+        </view>
+        <view class="od__party-call" wx:if="{{order.worker_phone}}" data-phone="{{order.worker_phone}}" bindtap="callPhone">📞 拨打</view>
+      </view>
+    </view>
+
+    <!-- 状态时间线 -->
+    <view class="card od__card">
+      <view class="od__party-title">🕐 订单进度</view>
+      <view class="od__timeline">
+        <view class="od__tl-item" wx:for="{{logs}}" wx:key="id">
+          <view class="od__tl-dot {{index === 0 ? 'is-first' : ''}}"></view>
+          <view class="od__tl-body">
+            <view class="od__tl-content">{{item.content}}</view>
+            <view class="od__tl-meta">{{item.operator_name || '系统'}} · {{item.created_at}}</view>
+          </view>
+        </view>
+        <view class="od__tl-item" wx:if="{{logs.length === 0}}">
+          <view class="od__tl-dot"></view>
+          <view class="od__tl-body"><view class="od__tl-content">暂无进度记录</view></view>
+        </view>
+      </view>
+    </view>
+
+    <view class="od__holder {{showPay ? 'od__holder--pay' : ''}}"></view>
+
+    <!-- ================= 支付卡片（底部操作栏上方，仅下单客户 + 待支付 + 非终态） ================= -->
+    <view class="od__pay-card" wx:if="{{showPay}}">
+      <view class="od__pay-info">
+        <view class="od__pay-label">订单金额</view>
+        <view class="od__pay-amount">¥{{order.budget}}</view>
+      </view>
+      <button class="btn btn--primary od__pay-btn"
+              loading="{{paying}}" disabled="{{paying || acting}}"
+              bindtap="goPay">去支付</button>
+    </view>
+
+    <!-- ================= 底部操作栏（严格按状态机） ================= -->
+    <view class="od__bar" wx:if="{{order}}">
+      <!-- 未登录 -->
+      <block wx:if="{{!role}}">
+        <button class="btn btn--primary btn--block" bindtap="goLogin">登录后操作</button>
+      </block>
+
+      <block wx:else>
+        <!-- ===== 师傅 ===== -->
+        <block wx:if="{{role === 'worker'}}">
+          <!-- pending → 抢单 -->
+          <block wx:if="{{order.status === 'pending'}}">
+            <button class="btn btn--plain od__bar-half" bindtap="contactSupport">联系运营</button>
+            <button class="btn btn--primary od__bar-half" disabled="{{acting}}" bindtap="doAccept">立即抢单</button>
+          </block>
+          <!-- dispatched → 接受派单 -->
+          <block wx:elif="{{order.status === 'dispatched'}}">
+            <button class="btn btn--plain od__bar-half" bindtap="contactSupport">无法上门</button>
+            <button class="btn btn--primary od__bar-half" disabled="{{acting}}" bindtap="doAccept">接受派单</button>
+          </block>
+          <!-- accepted → 开始服务 -->
+          <block wx:elif="{{order.status === 'accepted'}}">
+            <button class="btn btn--primary btn--block" disabled="{{acting}}" bindtap="doStart">开始服务</button>
+          </block>
+          <!-- working → 提交完工 + 中途退出（POST /abort，working → aborted） -->
+          <block wx:elif="{{order.status === 'working'}}">
+            <button class="btn btn--danger od__bar-half" disabled="{{acting}}" bindtap="openAbort">中途退出</button>
+            <button class="btn btn--primary od__bar-half" disabled="{{acting}}" bindtap="openFinish">提交完工</button>
+          </block>
+          <!-- aborted → 等客户确认实收 -->
+          <block wx:elif="{{order.status === 'aborted'}}">
+            <button class="btn btn--dark btn--block" disabled>已中途结束，等待客户确认结算</button>
+          </block>
+          <!-- finished → 等客户确认 -->
+          <block wx:elif="{{order.status === 'finished'}}">
+            <button class="btn btn--dark btn--block" disabled>已提交完工，等待客户确认</button>
+          </block>
+          <!-- completed → 回评客户（仅接单人且未评过） -->
+          <block wx:elif="{{order.status === 'completed' && isWorker && !order.worker_rating}}">
+            <button class="btn btn--primary btn--block" bindtap="openRateWorker">评价客户</button>
+          </block>
+          <block wx:else>
+            <button class="btn btn--dark btn--block" disabled>订单已结束</button>
+          </block>
+        </block>
+
+        <!-- ===== 客户 ===== -->
+        <block wx:elif="{{role === 'customer'}}">
+          <!-- finished → 确认完成 -->
+          <block wx:if="{{order.status === 'finished'}}">
+            <button class="btn btn--primary btn--block" disabled="{{acting}}" bindtap="doConfirm">确认完成</button>
+          </block>
+          <!-- aborted → 确认结算实收金额（仅下单客户，走 confirm：aborted → completed） -->
+          <block wx:elif="{{order.status === 'aborted' && isOwner}}">
+            <button class="btn btn--primary btn--block" disabled="{{acting}}" bindtap="doConfirm">
+              {{finance && finance.actualFee ? '确认结算 ¥' + finance.actualFee : '确认结算'}}
+            </button>
+          </block>
+          <!-- completed → 评价 -->
+          <block wx:elif="{{order.status === 'completed' && !order.rating}}">
+            <button class="btn btn--primary btn--block" bindtap="openRate">评价本次服务</button>
+          </block>
+          <block wx:elif="{{order.status === 'completed'}}">
+            <button class="btn btn--dark btn--block" disabled>订单已完成</button>
+          </block>
+          <!-- pending/dispatched/accepted + working → 取消（开工后按退款政策执行，strict 返回 409） -->
+          <block wx:elif="{{order.status === 'pending' || order.status === 'dispatched' || order.status === 'accepted' || order.status === 'working'}}">
+            <button class="btn btn--danger btn--block" disabled="{{acting}}" bindtap="openCancel">取消订单</button>
+          </block>
+          <block wx:else>
+            <button class="btn btn--dark btn--block" disabled>订单已结束</button>
+          </block>
+        </block>
+
+        <!-- ===== 其它（admin 等） ===== -->
+        <block wx:else>
+          <button class="btn btn--dark btn--block" disabled>当前角色不可操作</button>
+        </block>
+      </block>
+    </view>
+
+    <!-- ================= 弹层：提交完工 ================= -->
+    <view class="mask" wx:if="{{popup === 'finish'}}" bindtap="closePopup"></view>
+    <view class="sheet" wx:if="{{popup === 'finish'}}">
+      <view class="sheet__title">提交完工</view>
+      <view class="form-item">
+        <view class="form-item__label form-item__label--req">结算金额</view>
+        <view class="form-item__control od__budget">
+          <text class="od__budget-symbol">¥</text>
+          <input type="digit" placeholder="请输入实际结算金额" placeholder-class="ph"
+                 value="{{finishPrice}}" data-key="finishPrice" bindinput="onPopupInput" />
+        </view>
+      </view>
+      <view class="form-item form-item--col">
+        <view class="form-item__label">完工备注</view>
+        <view class="form-item__control">
+          <input placeholder="如：已清洗干净，耗材更换完成" placeholder-class="ph"
+                 value="{{finishRemark}}" data-key="finishRemark" bindinput="onPopupInput" />
+        </view>
+      </view>
+      <view class="od__popup-tip">平台将按结算金额收取 10% 服务费。</view>
+      <button class="btn btn--primary btn--block" bindtap="submitFinish">确认完工</button>
+    </view>
+
+    <!-- ================= 弹层：中途退出（师傅 working → aborted） ================= -->
+    <view class="mask" wx:if="{{popup === 'abort'}}" bindtap="closePopup"></view>
+    <view class="sheet" wx:if="{{popup === 'abort'}}">
+      <view class="sheet__title">中途退出</view>
+      <view class="form-item form-item--col">
+        <view class="form-item__label form-item__label--req">退出原因</view>
+        <view class="form-item__control">
+          <input placeholder="如：突发急事无法继续服务" placeholder-class="ph"
+                 value="{{abortReason}}" data-key="abortReason" bindinput="onPopupInput" />
+        </view>
+      </view>
+      <!-- fixed 单：填写实收金额（>0 且不超过预算） -->
+      <view class="form-item form-item--col" wx:if="{{order.billing_type !== 'hourly'}}">
+        <view class="form-item__label form-item__label--req">实收金额</view>
+        <view class="form-item__control od__budget">
+          <text class="od__budget-symbol">¥</text>
+          <input type="digit" placeholder="请输入本次实收金额" placeholder-class="ph"
+                 value="{{abortPrice}}" data-key="abortPrice" bindinput="onPopupInput" />
+        </view>
+        <view class="od__popup-tip">不超过预算 ¥{{order.budget}}，客户确认后结算。</view>
+      </view>
+      <!-- hourly 单：按时长自动计算，不可输入 -->
+      <view class="form-item form-item--col" wx:else>
+        <view class="form-item__label">实收金额</view>
+        <view class="form-item__control od__hourly-note">按时长自动计算</view>
+        <view class="od__popup-tip">按时薪 ¥{{order.hourly_price}}/h × 超过半小时的服务时长（半小时向上取整）计算，上限为已付金额。</view>
+      </view>
+      <view class="od__popup-tip">提交后订单转为「中途结束」，由客户确认实收金额后结算。</view>
+      <button class="btn btn--danger btn--block" bindtap="submitAbort">确认退出</button>
+      <button class="btn btn--plain btn--block od__popup-btn2" bindtap="closePopup">再想想</button>
+    </view>
+
+    <!-- ================= 弹层：取消原因 ================= -->
+    <view class="mask" wx:if="{{popup === 'cancel'}}" bindtap="closePopup"></view>
+    <view class="sheet" wx:if="{{popup === 'cancel'}}">
+      <view class="sheet__title">取消订单</view>
+      <view class="form-item form-item--col">
+        <view class="form-item__label form-item__label--req">取消原因</view>
+        <view class="form-item__control">
+          <input placeholder="请填写取消原因" placeholder-class="ph"
+                 value="{{cancelReason}}" data-key="cancelReason" bindinput="onPopupInput" />
+        </view>
+      </view>
+      <button class="btn btn--danger btn--block" bindtap="submitCancel">确认取消</button>
+      <button class="btn btn--plain btn--block od__popup-btn2" bindtap="closePopup">再想想</button>
+    </view>
+
+    <!-- ================= 弹层：评价（总分 + 技术/态度/准时三维 + 快捷标签 + 评论） ================= -->
+    <view class="mask" wx:if="{{popup === 'rate'}}" bindtap="closePopup"></view>
+    <view class="sheet" wx:if="{{popup === 'rate'}}">
+      <view class="sheet__title">评价本次服务</view>
+      <view class="od__stars">
+        <text class="od__star {{rating >= item ? 'is-on' : ''}}"
+              wx:for="{{stars}}" wx:key="*this"
+              data-star="{{item}}" bindtap="setRating">★</text>
+      </view>
+      <view class="od__stars-text">{{rating}} 星 · {{rating >= 5 ? '非常满意' : rating >= 4 ? '满意' : rating >= 3 ? '一般' : '有待改进'}}</view>
+
+      <!-- 三维星级（默认 5 星，各 1-5） -->
+      <view class="od__dim">
+        <text class="od__dim-label">技术</text>
+        <view class="od__dim-stars">
+          <text class="od__star od__star--sm {{rateSkill >= item ? 'is-on' : ''}}"
+                wx:for="{{stars}}" wx:key="*this"
+                data-key="rateSkill" data-star="{{item}}" bindtap="setDim">★</text>
+        </view>
+        <text class="od__dim-val">{{rateSkill}} 星</text>
+      </view>
+      <view class="od__dim">
+        <text class="od__dim-label">态度</text>
+        <view class="od__dim-stars">
+          <text class="od__star od__star--sm {{rateAttitude >= item ? 'is-on' : ''}}"
+                wx:for="{{stars}}" wx:key="*this"
+                data-key="rateAttitude" data-star="{{item}}" bindtap="setDim">★</text>
+        </view>
+        <text class="od__dim-val">{{rateAttitude}} 星</text>
+      </view>
+      <view class="od__dim">
+        <text class="od__dim-label">准时</text>
+        <view class="od__dim-stars">
+          <text class="od__star od__star--sm {{ratePunctual >= item ? 'is-on' : ''}}"
+                wx:for="{{stars}}" wx:key="*this"
+                data-key="ratePunctual" data-star="{{item}}" bindtap="setDim">★</text>
+        </view>
+        <text class="od__dim-val">{{ratePunctual}} 星</text>
+      </view>
+
+      <!-- 快捷标签（≤3 个） -->
+      <view class="od__tags-head">
+        <text class="od__tags-title">快捷标签</text>
+        <text class="od__tags-count">最多 3 个</text>
+      </view>
+      <view class="od__tags">
+        <view class="od__tag {{item._on ? 'is-on' : ''}}"
+              wx:for="{{rateTags}}" wx:key="name"
+              data-index="{{index}}" bindtap="toggleRateTag">{{item.name}}</view>
+      </view>
+
+      <view class="form-item form-item--col">
+        <view class="form-item__label">评价内容</view>
+        <view class="form-item__control">
+          <input placeholder="说说这次服务的感受（选填）" placeholder-class="ph"
+                 value="{{rateComment}}" data-key="rateComment" bindinput="onPopupInput" />
+        </view>
+      </view>
+      <button class="btn btn--primary btn--block" bindtap="submitRate">提交评价</button>
+    </view>
+
+    <!-- ================= 弹层：师傅回评客户 ================= -->
+    <view class="mask" wx:if="{{popup === 'wrate'}}" bindtap="closePopup"></view>
+    <view class="sheet" wx:if="{{popup === 'wrate'}}">
+      <view class="sheet__title">评价客户</view>
+      <view class="od__stars">
+        <text class="od__star {{wrRating >= item ? 'is-on' : ''}}"
+              wx:for="{{stars}}" wx:key="*this"
+              data-star="{{item}}" bindtap="setWrRating">★</text>
+      </view>
+      <view class="od__stars-text">{{wrRating}} 星 · {{wrRating >= 4 ? '合作愉快' : wrRating >= 3 ? '一般' : '沟通不太顺'}}</view>
+
+      <view class="od__tags-head">
+        <text class="od__tags-title">客户印象</text>
+        <text class="od__tags-count">最多 3 个</text>
+      </view>
+      <view class="od__tags">
+        <view class="od__tag {{item._on ? 'is-on' : ''}}"
+              wx:for="{{wrTags}}" wx:key="name"
+              data-index="{{index}}" bindtap="toggleWrTag">{{item.name}}</view>
+      </view>
+
+      <view class="form-item form-item--col">
+        <view class="form-item__label">评价内容</view>
+        <view class="form-item__control">
+          <input placeholder="说说这次合作的感受（选填）" placeholder-class="ph"
+                 value="{{wrComment}}" data-key="wrComment" bindinput="onPopupInput" />
+        </view>
+      </view>
+      <button class="btn btn--primary btn--block" bindtap="submitRateWorker">提交评价</button>
+    </view>
+  </block>
+
+  <!-- 加载失败 -->
+  <view class="empty" wx:if="{{!loading && !order}}">
+    <text class="empty__icon">⚠️</text>
+    <text class="empty__text">订单加载失败</text>
+    <button class="btn btn--ghost btn--sm empty__btn" bindtap="reload">重试</button>
+  </view>
+</view>

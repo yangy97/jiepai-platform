@@ -1,0 +1,256 @@
+/* ================= 全局样式 ================= */
+:root {
+  --jp-side-bg: #001529;
+  --jp-primary: #1890ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #f5f6f8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  color: #303133;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 内容区通用白卡片 */
+.page {
+  background: #fff;
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}
+
+/* ================= 一页式布局 =================
+   头部/侧边栏固定，页面不滚动：
+   - 普通页面（如概览）在自己的区域内滚动
+   - 列表页 .page 撑满剩余高度，表格 .table-wrap 内部滚动，分页固定底部
+*/
+.content > * {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.content > .page {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.content > .page > * {
+  flex-shrink: 0;
+}
+
+.content > .page > .table-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.table-wrap > .el-table {
+  height: 100%;
+}
+
+/* 结算中心（Tabs 页）：标签内容区撑满，表格内部滚动 */
+.content > .page > .el-tabs {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.content > .page > .el-tabs > .el-tabs__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.content > .page > .el-tabs > .el-tabs__content > .el-tab-pane {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.content > .page > .el-tabs > .el-tabs__content > .el-tab-pane > * {
+  flex-shrink: 0;
+}
+
+.content > .page > .el-tabs > .el-tabs__content > .el-tab-pane > .table-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.page + .page {
+  margin-top: 12px;
+}
+
+/* 筛选区 */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.filter-bar .el-select,
+.filter-bar .el-input {
+  width: 200px;
+}
+
+/* 表格顶部小标题 */
+.table-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 分页 */
+.pagination-wrap {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 详情抽屉 */
+.detail-section {
+  margin-bottom: 18px;
+}
+
+.detail-section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2329;
+  margin-bottom: 10px;
+  padding-left: 8px;
+  border-left: 3px solid var(--jp-primary);
+}
+
+.desc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 8px;
+  font-size: 13px;
+}
+
+.desc-grid .label {
+  color: #909399;
+}
+
+.desc-grid .value {
+  color: #303133;
+  word-break: break-all;
+}
+
+/* 登录页 */
+.login-page {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #001529 0%, #003a8c 55%, #1890ff 100%);
+}
+
+.login-card {
+  width: 380px;
+  padding: 34px 30px 26px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+}
+
+.login-logo {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.login-logo .badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #1890ff, #003a8c);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 52px;
+  display: inline-block;
+}
+
+.login-logo h2 {
+  margin: 12px 0 4px;
+  font-size: 19px;
+  color: #1f2329;
+}
+
+.login-logo p {
+  margin: 0;
+  color: #909399;
+  font-size: 12px;
+}
+
+.login-tip {
+  margin-top: 14px;
+  padding: 8px 10px;
+  background: #f0f7ff;
+  border: 1px dashed #91caff;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #1668dc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 统计卡片 */
+.stat-num {
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #1f2329;
+  margin-top: 6px;
+}
+
+.stat-sub {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 4px;
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c0c4cc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #909399;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}

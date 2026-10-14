@@ -1,0 +1,185 @@
+<!-- pages/mine/mine.wxml —— 我的 -->
+<view class="page mine">
+
+  <!-- 订阅消息授权引导横幅（docs/changes/008，授权成功后隐藏） -->
+  <subscribe-guide wx:if="{{guideVisible}}" mode="bar" bind:done="onGuideDone" />
+
+  <!-- 用户头部 -->
+  <view class="mine__head">
+    <block wx:if="{{logged && user}}">
+      <!-- 头像：点击即触发微信头像选择（open-type="chooseAvatar"） -->
+      <button class="mine__avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+        <image wx:if="{{user._avatarUrl}}" class="mine__avatar-img" src="{{user._avatarUrl}}" mode="aspectFill"></image>
+        <view wx:else class="mine__avatar">{{user._first}}</view>
+        <view class="mine__avatar-change">📷 {{avatarUploading ? '上传中' : '更换'}}</view>
+      </button>
+      <view class="mine__user">
+        <view class="mine__name">
+          {{user.name || '微信用户'}}
+          <text class="mine__role {{user.role === 'worker' ? 'is-worker' : ''}}">
+            {{user.role === 'worker' ? '师傅' : user.role === 'admin' ? '运营' : '客户'}}
+          </text>
+        </view>
+        <view class="mine__phone">{{user.phone}}</view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="mine__avatar mine__avatar--empty">👋</view>
+      <view class="mine__user" bindtap="goLogin">
+        <view class="mine__name">点击登录</view>
+        <view class="mine__phone">登录后发布需求 / 接单赚钱</view>
+      </view>
+      <text class="mine__arrow">›</text>
+    </block>
+  </view>
+
+  <!-- ===== 师傅：钱包 + 统计 ===== -->
+  <block wx:if="{{logged && user.role === 'worker'}}">
+    <view class="mine__wallet">
+      <view class="mine__wallet-title">我的钱包</view>
+      <view class="mine__wallet-main">
+        <view class="mine__wallet-balance">
+          <view class="mine__wallet-label">可用余额（元）</view>
+          <view class="mine__wallet-val">{{wallet ? wallet.balance : '0.00'}}</view>
+        </view>
+        <view class="mine__wallet-btn" bindtap="openWalletLogs">流水明细 ›</view>
+      </view>
+      <view class="mine__wallet-row">
+        <view class="mine__wallet-cell">
+          <view class="mine__wallet-cell-val">{{wallet ? wallet.income : '0.00'}}</view>
+          <view class="mine__wallet-cell-label">累计收入</view>
+        </view>
+        <view class="mine__wallet-cell">
+          <view class="mine__wallet-cell-val">{{wallet ? wallet.withdrawn : '0.00'}}</view>
+          <view class="mine__wallet-cell-label">累计提现</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="mine__stats card" wx:if="{{stats}}">
+      <view class="mine__stat">
+        <view class="mine__stat-val">{{stats.doing}}</view>
+        <view class="mine__stat-label">进行中</view>
+      </view>
+      <view class="mine__stat">
+        <view class="mine__stat-val">{{stats.done}}</view>
+        <view class="mine__stat-label">已完成</view>
+      </view>
+      <view class="mine__stat">
+        <view class="mine__stat-val mine__stat-val--hl">{{stats.today_income}}</view>
+        <view class="mine__stat-label">今日收入</view>
+      </view>
+      <view class="mine__stat">
+        <view class="mine__stat-val">{{stats.rating}}</view>
+        <view class="mine__stat-label">评分</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ===== 客户：我的发布 ===== -->
+  <view class="mine__cust card" wx:if="{{logged && user.role === 'customer'}}" bindtap="goOrders">
+    <view class="mine__cust-cell">
+      <view class="mine__cust-val">{{myOrderTotal}}</view>
+      <view class="mine__cust-label">我的发布</view>
+    </view>
+    <view class="mine__cust-cell">
+      <view class="mine__cust-val">📋</view>
+      <view class="mine__cust-label">查看全部订单</view>
+    </view>
+    <view class="mine__cust-cell">
+      <view class="mine__cust-val">🚀</view>
+      <view class="mine__cust-label">发布新需求</view>
+    </view>
+  </view>
+
+  <!-- 功能列表 -->
+  <view class="card mine__menu">
+    <!-- 消息中心（🔔 + 未读数字角标，0 不显示） -->
+    <view class="mine__menu-item" wx:if="{{logged}}" bindtap="goMessage">
+      <text class="mine__menu-icon">🔔</text>
+      <text class="mine__menu-text">消息中心</text>
+      <text class="mine__badge" wx:if="{{unreadCount > 0}}">{{unreadCount > 99 ? '99+' : unreadCount}}</text>
+      <text class="mine__menu-arrow">›</text>
+    </view>
+    <view class="mine__menu-item" wx:if="{{logged && user.role === 'worker'}}" bindtap="goWorkerApply">
+      <text class="mine__menu-icon">🪪</text>
+      <text class="mine__menu-text">师傅入驻 / 认证状态</text>
+      <text class="mine__menu-arrow">›</text>
+    </view>
+    <view class="mine__menu-item" wx:if="{{logged && user.role === 'worker'}}" bindtap="openWalletLogs">
+      <text class="mine__menu-icon">🧾</text>
+      <text class="mine__menu-text">钱包明细</text>
+      <text class="mine__menu-arrow">›</text>
+    </view>
+    <view class="mine__menu-item" wx:if="{{logged && user.role === 'customer'}}" bindtap="goWorkerApply">
+      <text class="mine__menu-icon">👷</text>
+      <text class="mine__menu-text">成为师傅 · 入驻接单</text>
+      <text class="mine__menu-arrow">›</text>
+    </view>
+    <view class="mine__menu-item" wx:if="{{logged}}" bindtap="switchRoleDemo">
+      <text class="mine__menu-icon">🔁</text>
+      <text class="mine__menu-text">切换角色演示</text>
+      <text class="mine__menu-arrow">›</text>
+    </view>
+    <view class="mine__menu-item" bindtap="openAbout">
+      <text class="mine__menu-icon">⚙️</text>
+      <text class="mine__menu-text">设置 / 关于</text>
+      <text class="mine__menu-arrow">›</text>
+    </view>
+    <view class="mine__menu-item mine__menu-item--danger" wx:if="{{logged}}" bindtap="doLogout">
+      <text class="mine__menu-icon">🚪</text>
+      <text class="mine__menu-text">退出登录</text>
+      <text class="mine__menu-arrow">›</text>
+    </view>
+  </view>
+
+  <view class="mine__footer">接派 · 上门服务接单派单平台 v1.0</view>
+
+  <!-- ===== 弹层：钱包流水 ===== -->
+  <view class="mask" wx:if="{{popup === 'walletLogs'}}" bindtap="closePopup"></view>
+  <view class="sheet" wx:if="{{popup === 'walletLogs'}}" catchtap="stopnoop">
+    <view class="sheet__title">钱包明细（近 10 条）</view>
+    <view class="loading" wx:if="{{logsLoading}}"><view class="loading__spin"></view>加载中…</view>
+    <view class="empty" wx:elif="{{walletLogs.length === 0}}">
+      <text class="empty__icon">🪙</text>
+      <text class="empty__text">暂无流水记录</text>
+    </view>
+    <view class="mine__log" wx:for="{{walletLogs}}" wx:key="id">
+      <view class="mine__log-info">
+        <view class="mine__log-remark">{{item.remark || item._typeText}}</view>
+        <view class="mine__log-time">订单 {{item.order_id || '-'}} · {{item._time}}</view>
+      </view>
+      <view class="mine__log-right">
+        <view class="mine__log-amount {{item._neg ? 'is-neg' : ''}}">{{item._amount}}</view>
+        <view class="mine__log-balance">余额 {{item.balance_after}}</view>
+      </view>
+    </view>
+    <button class="btn btn--plain btn--block" bindtap="closePopup">关闭</button>
+  </view>
+
+  <!-- ===== 弹层：关于 ===== -->
+  <view class="mask" wx:if="{{popup === 'about'}}" bindtap="closePopup"></view>
+  <view class="sheet" wx:if="{{popup === 'about'}}">
+    <view class="sheet__title">关于 · 接派</view>
+    <view class="mine__about">
+      <view class="mine__about-logo">接派</view>
+      <view class="mine__about-name">接派 · 上门服务平台</view>
+      <view class="mine__about-desc">
+        覆盖家电清洗、保洁、维修、搬家等 8 大类上门服务。
+        客户一键发单，师傅抢单/运营派单，全程状态可追踪，平台担保交易。
+      </view>
+      <view class="mine__about-meta">版本 v1.0（演示环境）</view>
+      <view class="mine__about-meta">接口基地址：http://127.0.0.1:7010</view>
+    </view>
+    <button class="btn btn--primary btn--block" bindtap="closePopup">知道了</button>
+  </view>
+
+  <!-- ===== 弹层：角色说明 ===== -->
+  <view class="mask" wx:if="{{popup === 'role'}}" bindtap="closePopup"></view>
+  <view class="sheet" wx:if="{{popup === 'role'}}">
+    <view class="sheet__title">角色说明</view>
+    <view class="mine__about-meta">客户账号：可发布需求、确认完工、评价。</view>
+    <view class="mine__about-meta">师傅账号：可抢单、开工、提交完工、查看钱包。</view>
+    <button class="btn btn--primary btn--block" bindtap="closePopup">知道了</button>
+  </view>
+</view>

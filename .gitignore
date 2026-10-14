@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.env
+.env.local
+admin/dist/
+server/run/
+server/uploads/
+# 微信开发者工具私有配置（个人环境）与支付证书（真实模式下放 server/certs/）
+miniapp/project.private.config.json
+*.pem
+server/certs/

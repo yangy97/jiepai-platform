@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "师傅入驻认证",
+  "usingComponents": {
+    "subscribe-guide": "/components/subscribe-guide/subscribe-guide"
+  }
+}

@@ -1,0 +1,319 @@
+/* pages/mine/mine.wxss —— 我的 */
+
+.mine__head {
+  display: flex;
+  align-items: center;
+  padding: 56rpx 40rpx 48rpx;
+  background: linear-gradient(135deg, #ff8a5c, #ff6a3d);
+  color: #ffffff;
+}
+.mine__avatar {
+  width: 116rpx;
+  height: 116rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  color: #ff6a3d;
+  font-size: 48rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 26rpx;
+  flex-shrink: 0;
+}
+.mine__avatar--empty {
+  font-size: 52rpx;
+}
+/* 头像选择按钮（open-type="chooseAvatar"，覆盖原头像位） */
+.mine__avatar-btn {
+  position: relative;
+  width: 116rpx;
+  height: 116rpx;
+  margin: 0 26rpx 0 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  line-height: 1;
+  flex-shrink: 0;
+  overflow: visible;
+}
+.mine__avatar-btn::after {
+  border: none;
+}
+.mine__avatar-btn .mine__avatar {
+  margin-right: 0;
+}
+.mine__avatar-img {
+  display: block;
+  width: 116rpx;
+  height: 116rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+}
+.mine__avatar-change {
+  position: absolute;
+  left: 50%;
+  bottom: 2rpx;
+  transform: translateX(-50%);
+  background: rgba(31, 36, 48, 0.72);
+  color: #ffffff;
+  font-size: 18rpx;
+  line-height: 1.4;
+  padding: 2rpx 12rpx;
+  border-radius: 16rpx;
+  white-space: nowrap;
+}
+.mine__user {
+  flex: 1;
+}
+.mine__name {
+  font-size: 36rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+}
+.mine__role {
+  margin-left: 16rpx;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 4rpx 18rpx;
+}
+.mine__role.is-worker {
+  background: #1f2430;
+  color: #ffd166;
+}
+.mine__phone {
+  font-size: 25rpx;
+  opacity: 0.92;
+  margin-top: 8rpx;
+}
+.mine__arrow {
+  font-size: 48rpx;
+  opacity: 0.9;
+}
+
+/* 钱包 */
+.mine__wallet {
+  margin: -24rpx 24rpx 20rpx;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, #1f2430, #333a4d);
+  color: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx 28rpx 8rpx;
+  box-shadow: 0 12rpx 30rpx rgba(31, 36, 48, 0.25);
+}
+.mine__wallet-title {
+  font-size: 25rpx;
+  color: #a8afc0;
+}
+.mine__wallet-main {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 10rpx;
+}
+.mine__wallet-label {
+  font-size: 22rpx;
+  color: #a8afc0;
+}
+.mine__wallet-val {
+  font-size: 60rpx;
+  font-weight: 800;
+  color: #ffd166;
+  line-height: 1.2;
+}
+.mine__wallet-btn {
+  background: #ff6a3d;
+  color: #ffffff;
+  font-size: 24rpx;
+  border-radius: 30rpx;
+  padding: 12rpx 26rpx;
+  margin-bottom: 12rpx;
+}
+.mine__wallet-row {
+  display: flex;
+  margin-top: 24rpx;
+  border-top: 2rpx solid rgba(255, 255, 255, 0.12);
+}
+.mine__wallet-cell {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0 22rpx;
+}
+.mine__wallet-cell-val {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+.mine__wallet-cell-label {
+  font-size: 22rpx;
+  color: #a8afc0;
+  margin-top: 4rpx;
+}
+
+/* 统计 */
+.mine__stats {
+  display: flex;
+  margin-top: 4rpx;
+}
+.mine__stat {
+  flex: 1;
+  text-align: center;
+}
+.mine__stat-val {
+  font-size: 34rpx;
+  font-weight: 800;
+  color: #1f2430;
+}
+.mine__stat-val--hl {
+  color: #ff6a3d;
+}
+.mine__stat-label {
+  font-size: 22rpx;
+  color: #8a90a0;
+  margin-top: 4rpx;
+}
+
+/* 客户统计 */
+.mine__cust {
+  display: flex;
+  margin-top: 24rpx;
+}
+.mine__cust-cell {
+  flex: 1;
+  text-align: center;
+}
+.mine__cust-val {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #ff6a3d;
+}
+.mine__cust-label {
+  font-size: 23rpx;
+  color: #8a90a0;
+  margin-top: 4rpx;
+}
+
+/* 菜单 */
+.mine__menu {
+  padding: 8rpx 24rpx;
+}
+.mine__menu-item {
+  display: flex;
+  align-items: center;
+  height: 100rpx;
+  border-bottom: 2rpx solid #f1f2f4;
+}
+.mine__menu-item:last-child {
+  border-bottom: none;
+}
+.mine__menu-icon {
+  font-size: 34rpx;
+  margin-right: 20rpx;
+}
+.mine__menu-text {
+  flex: 1;
+  font-size: 28rpx;
+}
+.mine__menu-arrow {
+  color: #b6bbc6;
+  font-size: 34rpx;
+}
+/* 消息未读数字角标（0 不显示） */
+.mine__badge {
+  min-width: 34rpx;
+  height: 34rpx;
+  padding: 0 10rpx;
+  margin-right: 12rpx;
+  border-radius: 17rpx;
+  background: #ff3b30;
+  color: #ffffff;
+  font-size: 21rpx;
+  font-weight: 700;
+  line-height: 34rpx;
+  text-align: center;
+}
+.mine__menu-item--danger .mine__menu-text {
+  color: #e5484d;
+}
+
+.mine__footer {
+  text-align: center;
+  color: #b6bbc6;
+  font-size: 22rpx;
+  padding: 40rpx 0 20rpx;
+}
+
+/* 流水 */
+.mine__log {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #f1f2f4;
+}
+.mine__log-info {
+  flex: 1;
+}
+.mine__log-remark {
+  font-size: 27rpx;
+  color: #1f2430;
+}
+.mine__log-time {
+  font-size: 22rpx;
+  color: #b6bbc6;
+  margin-top: 4rpx;
+}
+.mine__log-right {
+  text-align: right;
+}
+.mine__log-amount {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #12a05c;
+}
+.mine__log-amount.is-neg {
+  color: #e5484d;
+}
+.mine__log-balance {
+  font-size: 22rpx;
+  color: #8a90a0;
+  margin-top: 4rpx;
+}
+
+/* 关于 */
+.mine__about {
+  text-align: center;
+  padding: 8rpx 0 24rpx;
+}
+.mine__about-logo {
+  width: 120rpx;
+  height: 120rpx;
+  line-height: 120rpx;
+  margin: 0 auto;
+  border-radius: 34rpx;
+  background: linear-gradient(135deg, #ff8a5c, #ff6a3d);
+  color: #ffffff;
+  font-size: 40rpx;
+  font-weight: 800;
+}
+.mine__about-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-top: 18rpx;
+}
+.mine__about-desc {
+  font-size: 25rpx;
+  color: #5b6172;
+  line-height: 1.8;
+  margin-top: 14rpx;
+  text-align: left;
+}
+.mine__about-meta {
+  font-size: 23rpx;
+  color: #8a90a0;
+  margin-top: 10rpx;
+  text-align: center;
+}

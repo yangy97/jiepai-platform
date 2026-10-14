@@ -1,0 +1,106 @@
+<!-- pages/index/index.wxml —— 首页 -->
+<view class="page index">
+
+  <!-- 搜索框（占位） -->
+  <view class="index__search">
+    <text class="index__search-icon">🔍</text>
+    <input class="index__search-input" placeholder="搜索家电清洗 / 保洁 / 维修…" placeholder-class="ph" disabled bindtap="noop" />
+    <view class="index__search-btn" bindtap="noop">搜索</view>
+  </view>
+
+  <!-- 渐变 banner -->
+  <view class="index__banner">
+    <view class="index__banner-title">专业师傅上门 · 快速接单</view>
+    <view class="index__banner-desc">明码标价 · 平台担保 · 售后无忧</view>
+    <view class="index__banner-notice">📢 {{notice}}</view>
+    <view class="index__banner-deco index__banner-deco--1">🧹</view>
+    <view class="index__banner-deco index__banner-deco--2">🔧</view>
+  </view>
+
+  <!-- 师傅视角：我的需求 / 接单大厅 切换 -->
+  <view class="index__htabs" wx:if="{{role === 'worker'}}">
+    <view class="index__htab {{homeTab === 'mine' ? 'is-active' : ''}}" data-tab="mine" bindtap="switchHomeTab">我的需求</view>
+    <view class="index__htab {{homeTab === 'hall' ? 'is-active' : ''}}" data-tab="hall" bindtap="switchHomeTab">接单大厅</view>
+  </view>
+
+  <!-- ========== 客户视角（未登录 / 客户 / 师傅-我的需求） ========== -->
+  <block wx:if="{{role !== 'worker' || homeTab === 'mine'}}">
+    <!-- 加载中 -->
+    <view class="loading" wx:if="{{loading}}"><view class="loading__spin"></view>加载中…</view>
+
+    <!-- 服务类目 -->
+    <view class="index__section" wx:else>
+      <view class="index__section-head">
+        <text class="index__section-title">服务类目</text>
+        <text class="index__section-sub">8 项专业服务</text>
+      </view>
+      <view class="index__grid">
+        <view class="index__grid-item" wx:for="{{categories}}" wx:key="id" data-id="{{item.id}}" bindtap="goCategory">
+          <view class="index__grid-icon">{{item.icon}}</view>
+          <view class="index__grid-name">{{item.name}}</view>
+          <view class="index__grid-price">¥{{item.min_price_text}} {{item.unit}}</view>
+        </view>
+        <!-- 自定义特殊格子：进入下单页并默认选中自定义 -->
+        <view class="index__grid-item" bindtap="goCustom">
+          <view class="index__grid-icon">📋</view>
+          <view class="index__grid-name">自定义</view>
+          <view class="index__grid-price">按需发布</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 发布需求 -->
+    <view class="index__cta">
+      <button class="btn btn--primary btn--block index__cta-btn" bindtap="goCreate">🚀 发布需求 · 5 分钟匹配师傅</button>
+      <view class="index__cta-sub" bindtap="goOrders">查看我的订单 ›</view>
+    </view>
+  </block>
+
+  <!-- ========== 接单大厅（师傅） ========== -->
+  <block wx:else>
+    <view class="index__hall-head">
+      <text class="index__section-title">📢 待接订单</text>
+      <text class="index__hall-total">共 {{hallTotal}} 单</text>
+    </view>
+
+    <view class="loading" wx:if="{{hallLoading && hallList.length === 0}}"><view class="loading__spin"></view>加载中…</view>
+
+    <view class="empty" wx:elif="{{hallList.length === 0}}">
+      <text class="empty__icon">🌱</text>
+      <text class="empty__text">暂时没有可抢的订单</text>
+      <button class="btn btn--ghost btn--sm empty__btn" bindtap="reloadHall">刷新看看</button>
+    </view>
+
+    <block wx:else>
+      <view class="index__hall-item" wx:for="{{hallList}}" wx:key="id">
+        <view class="index__hall-card" data-id="{{item.id}}" bindtap="goDetail">
+          <view class="index__hall-top">
+            <text class="index__hall-cat">{{item.category_icon}} {{item.category_name}}</text>
+            <text class="index__hall-status {{item._statusCls}}">{{item._statusText}}</text>
+          </view>
+          <view class="index__hall-title">{{item.title}}</view>
+          <view class="index__hall-meta">📍 {{item.address}}</view>
+          <view class="index__hall-meta" wx:if="{{item.expect_at}}">⏰ 期望 {{item.expect_at}}</view>
+          <view class="index__hall-foot">
+            <view class="index__hall-price">¥{{item._price}}</view>
+            <button class="btn btn--primary btn--sm index__hall-grab"
+                    data-id="{{item.id}}"
+                    catchtap="grab"
+                    disabled="{{grabbingId === item.id}}">
+              {{grabbingId === item.id ? '抢单中…' : '立即抢单'}}
+            </button>
+          </view>
+        </view>
+      </view>
+
+      <view class="no-more" wx:if="{{hallEnd}}">没有更多了</view>
+      <view class="no-more" wx:else>上拉加载更多</view>
+    </block>
+  </block>
+
+  <!-- 未登录提示 -->
+  <view class="index__login-tip" wx:if="{{!role}}" bindtap="goLogin">
+    <text>👋 登录后可发布需求 / 接单赚钱</text>
+    <text class="index__login-link">去登录 ›</text>
+  </view>
+</view>

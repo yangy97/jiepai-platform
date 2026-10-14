@@ -1,0 +1,32 @@
+/* pages/order-list/order-list.wxss —— 订单列表 */
+
+.ol__tabs {
+  white-space: nowrap;
+  background: #ffffff;
+  padding: 16rpx 12rpx;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+}
+.ol__tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60rpx;
+  padding: 0 26rpx;
+  margin: 0 8rpx;
+  border-radius: 30rpx;
+  font-size: 26rpx;
+  color: #5b6172;
+  background: #f5f6f8;
+}
+.ol__tab.is-active {
+  background: #ff6a3d;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.ol__list {
+  padding-top: 20rpx;
+}

@@ -1,0 +1,259 @@
+/* pages/index/index.wxss —— 首页 */
+
+.ph {
+  color: #b6bbc6;
+}
+
+/* 搜索 */
+.index__search {
+  display: flex;
+  align-items: center;
+  margin: 20rpx 24rpx 0;
+  background: #ffffff;
+  border-radius: 16rpx;
+  height: 84rpx;
+  padding: 0 12rpx 0 24rpx;
+}
+.index__search-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+.index__search-input {
+  flex: 1;
+  height: 84rpx;
+  font-size: 27rpx;
+}
+.index__search-btn {
+  background: #ff6a3d;
+  color: #fff;
+  font-size: 26rpx;
+  border-radius: 12rpx;
+  padding: 12rpx 26rpx;
+}
+
+/* banner */
+.index__banner {
+  position: relative;
+  overflow: hidden;
+  margin: 20rpx 24rpx;
+  border-radius: 16rpx;
+  padding: 40rpx 32rpx 32rpx;
+  background: linear-gradient(135deg, #ff8a5c 0%, #ff6a3d 55%, #f4472b 100%);
+  color: #ffffff;
+}
+.index__banner-title {
+  font-size: 38rpx;
+  font-weight: 800;
+  letter-spacing: 2rpx;
+}
+.index__banner-desc {
+  margin-top: 10rpx;
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+.index__banner-notice {
+  margin-top: 26rpx;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 12rpx;
+  padding: 14rpx 18rpx;
+  font-size: 23rpx;
+  max-width: 78%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.index__banner-deco {
+  position: absolute;
+  opacity: 0.25;
+  font-size: 110rpx;
+}
+.index__banner-deco--1 {
+  right: -10rpx;
+  bottom: -24rpx;
+  transform: rotate(-15deg);
+}
+.index__banner-deco--2 {
+  right: 130rpx;
+  top: -26rpx;
+  transform: rotate(18deg);
+  font-size: 76rpx;
+}
+
+/* 师傅双 tab */
+.index__htabs {
+  display: flex;
+  margin: 4rpx 24rpx 8rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 8rpx;
+}
+.index__htab {
+  flex: 1;
+  text-align: center;
+  height: 74rpx;
+  line-height: 74rpx;
+  font-size: 28rpx;
+  color: #8a90a0;
+  border-radius: 12rpx;
+}
+.index__htab.is-active {
+  background: #ff6a3d;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+/* 区块 */
+.index__section {
+  margin-top: 8rpx;
+}
+.index__section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 8rpx 32rpx 4rpx;
+}
+.index__section-title {
+  font-size: 32rpx;
+  font-weight: 700;
+}
+.index__section-sub {
+  font-size: 24rpx;
+  color: #8a90a0;
+}
+
+/* 类目网格 */
+.index__grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 16rpx 12rpx 0;
+}
+.index__grid-item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22rpx 0;
+}
+.index__grid-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 28rpx;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48rpx;
+  box-shadow: 0 6rpx 18rpx rgba(31, 36, 48, 0.06);
+}
+.index__grid-item:active .index__grid-icon {
+  background: #fff4f0;
+}
+.index__grid-name {
+  margin-top: 14rpx;
+  font-size: 26rpx;
+  color: #1f2430;
+}
+.index__grid-price {
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: #ff6a3d;
+}
+
+/* CTA */
+.index__cta {
+  padding: 24rpx 24rpx 8rpx;
+}
+.index__cta-btn {
+  height: 96rpx;
+  font-size: 32rpx;
+  box-shadow: 0 12rpx 28rpx rgba(255, 106, 61, 0.28);
+}
+.index__cta-sub {
+  text-align: center;
+  color: #8a90a0;
+  font-size: 26rpx;
+  margin-top: 20rpx;
+}
+
+/* 接单大厅 */
+.index__hall-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 32rpx 8rpx;
+}
+.index__hall-total {
+  font-size: 24rpx;
+  color: #8a90a0;
+}
+.index__hall-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  margin: 0 24rpx 20rpx;
+  padding: 24rpx;
+}
+.index__hall-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+.index__hall-cat {
+  font-size: 25rpx;
+  color: #8a90a0;
+}
+.index__hall-status {
+  display: inline-flex;
+  align-items: center;
+  height: 42rpx;
+  padding: 0 16rpx;
+  border-radius: 21rpx;
+  font-size: 23rpx;
+  font-weight: 600;
+}
+.index__hall-title {
+  font-size: 31rpx;
+  font-weight: 700;
+  margin-bottom: 10rpx;
+}
+.index__hall-meta {
+  font-size: 25rpx;
+  color: #5b6172;
+  margin-bottom: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.index__hall-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f1f2f4;
+}
+.index__hall-price {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #ff6a3d;
+}
+.index__hall-grab {
+  min-width: 180rpx;
+}
+
+/* 未登录提示 */
+.index__login-tip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8rpx 24rpx 0;
+  padding: 24rpx 28rpx;
+  background: #ffffff;
+  border-radius: 16rpx;
+  font-size: 26rpx;
+  color: #5b6172;
+}
+.index__login-link {
+  color: #ff6a3d;
+  font-weight: 600;
+}

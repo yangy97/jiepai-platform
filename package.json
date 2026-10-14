@@ -1,0 +1,18 @@
+{
+  "name": "jiepai-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "接派 · 上门服务接单派单平台（微信原生小程序 + Vue3 管理端 + Node/MySQL 服务端）",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "db:setup": "npm --prefix server run db:init && npm --prefix server run db:seed",
+    "db:reset": "npm --prefix server run db:reset",
+    "dev:server": "npm --prefix server run dev",
+    "dev:admin": "npm --prefix admin run dev",
+    "dev": "node scripts/dev.mjs",
+    "build:admin": "npm --prefix admin run build",
+    "test:api": "bash scripts/api-test.sh"
+  }
+}

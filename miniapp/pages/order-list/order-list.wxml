@@ -1,0 +1,39 @@
+<!-- pages/order-list/order-list.wxml —— 订单列表 -->
+<view class="page ol">
+
+  <!-- 状态筛选横滑 tab -->
+  <scroll-view class="ol__tabs" scroll-x enable-flex>
+    <view class="ol__tab {{activeTab === item.value ? 'is-active' : ''}}"
+          wx:for="{{tabs}}" wx:key="value"
+          data-value="{{item.value}}" bindtap="switchTab">
+      {{item.text}}
+    </view>
+  </scroll-view>
+
+  <!-- 未登录空态 -->
+  <view class="empty" wx:if="{{!logged}}">
+    <text class="empty__icon">🔐</text>
+    <text class="empty__text">登录后查看我的订单</text>
+    <button class="btn btn--primary btn--sm empty__btn" bindtap="goLogin">去登录</button>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading" wx:elif="{{loading}}"><view class="loading__spin"></view>加载中…</view>
+
+  <!-- 空态 -->
+  <view class="empty" wx:elif="{{list.length === 0}}">
+    <text class="empty__icon">📭</text>
+    <text class="empty__text">暂无相关订单</text>
+    <button class="btn btn--ghost btn--sm empty__btn" wx:if="{{role === 'worker'}}" bindtap="goHall">去接单大厅</button>
+    <button class="btn btn--ghost btn--sm empty__btn" wx:else bindtap="goCreate">去发布需求</button>
+  </view>
+
+  <!-- 列表 -->
+  <block wx:else>
+    <view class="ol__list">
+      <order-card wx:for="{{list}}" wx:key="id" order="{{item}}" bind:tap="onCardTap"></order-card>
+    </view>
+    <view class="no-more" wx:if="{{!hasMore}}">没有更多了</view>
+    <view class="no-more" wx:else>上拉加载更多</view>
+  </block>
+</view>

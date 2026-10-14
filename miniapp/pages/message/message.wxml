@@ -1,0 +1,40 @@
+<!-- pages/message/message.wxml —— 消息中心 -->
+<view class="page msg">
+
+  <!-- 订阅消息授权引导横幅（docs/changes/008，授权成功后隐藏） -->
+  <subscribe-guide wx:if="{{guideVisible}}" mode="bar" bind:done="onGuideDone" />
+
+  <!-- 顶部：未读数 + 全部已读 -->
+  <view class="msg__bar">
+    <view class="msg__bar-count" wx:if="{{unreadCount > 0}}">{{unreadCount}} 条未读</view>
+    <view class="msg__bar-count msg__bar-count--none" wx:else>暂无未读消息</view>
+    <view class="msg__bar-read {{unreadCount > 0 && !marking ? '' : 'is-disabled'}}" bindtap="markAllRead">
+      ✓ 全部已读
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}"><view class="loading__spin"></view>加载中…</view>
+
+  <block wx:else>
+    <!-- 消息列表 -->
+    <view class="msg__item {{item.is_read ? '' : 'is-unread'}}"
+          wx:for="{{list}}" wx:key="id"
+          data-id="{{item.id}}" bindtap="onTapItem">
+      <view class="msg__dot"></view>
+      <view class="msg__body">
+        <view class="msg__title">{{item.title}}</view>
+        <view class="msg__content">{{item.content}}</view>
+        <view class="msg__meta">
+          <text class="msg__time">{{item._time}}</text>
+          <text class="msg__link" wx:if="{{item.order_id}}">查看订单 ›</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty" wx:if="{{list.length === 0}}">
+      <text class="empty__icon">🫧</text>
+      <text class="empty__text">暂无消息</text>
+    </view>
+    <view class="no-more" wx:if="{{list.length > 0 && !hasMore}}">没有更多了</view>
+  </block>
+</view>

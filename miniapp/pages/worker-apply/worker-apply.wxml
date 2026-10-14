@@ -1,0 +1,129 @@
+<!-- pages/worker-apply/worker-apply.wxml —— 师傅入驻认证 -->
+<view class="page wa">
+
+  <view class="loading" wx:if="{{initLoading}}"><view class="loading__spin"></view>加载中…</view>
+
+  <block wx:else>
+    <!-- ===== 已认证 ===== -->
+    <view class="wa__status wa__status--ok" wx:if="{{statusText === 'approved'}}">
+      <view class="wa__status-icon">✅</view>
+      <view class="wa__status-title">已完成师傅认证</view>
+      <view class="wa__status-desc">{{profile.real_name}} · {{profile.region}}</view>
+      <view class="wa__status-tags">
+        <text class="wa__tag">从业 {{profile.years}} 年</text>
+        <text class="wa__tag">评分 {{profile.rating}}</text>
+        <text class="wa__tag">累计 {{profile.order_count}} 单</text>
+      </view>
+      <button class="btn btn--primary btn--block wa__status-btn" bindtap="goHome">去接单大厅</button>
+    </view>
+
+    <!-- ===== 审核中 ===== -->
+    <view class="wa__status wa__status--wait" wx:elif="{{statusText === 'pending'}}">
+      <view class="wa__status-icon">⏳</view>
+      <view class="wa__status-title">资料审核中</view>
+      <view class="wa__status-desc">我们会在 1 个工作日内完成审核，请耐心等待。</view>
+      <view class="wa__status-tags">
+        <text class="wa__tag">{{profile.real_name}}</text>
+        <text class="wa__tag">{{profile.region}}</text>
+      </view>
+      <view class="wa__status-tip">审核期间可继续完善资料，重新提交将覆盖原有信息。</view>
+      <button class="btn btn--plain btn--block wa__status-btn" bindtap="reedit">修改并重新提交</button>
+    </view>
+
+    <!-- ===== 已驳回 ===== -->
+    <view class="wa__status wa__status--no" wx:elif="{{statusText === 'rejected'}}">
+      <view class="wa__status-icon">🚫</view>
+      <view class="wa__status-title">认证被驳回</view>
+      <view class="wa__status-desc">驳回原因：{{auditRemark || '资料不符合要求'}}</view>
+      <button class="btn btn--primary btn--block wa__status-btn" bindtap="reedit">重新提交认证</button>
+    </view>
+
+    <!-- ===== 已停用 ===== -->
+    <view class="wa__status wa__status--no" wx:elif="{{statusText === 'disabled'}}">
+      <view class="wa__status-icon">⛔</view>
+      <view class="wa__status-title">账号已停用</view>
+      <view class="wa__status-desc">如有疑问请联系平台运营：400-000-0000（演示）</view>
+    </view>
+
+    <!-- ===== 表单 ===== -->
+    <block wx:else>
+      <view class="wa__hero">
+        <view class="wa__hero-title">👷 师傅入驻</view>
+        <view class="wa__hero-desc">提交真实资料，审核通过后即可接单赚钱</view>
+      </view>
+
+      <view class="card wa__form">
+        <view class="form-item">
+          <view class="form-item__label form-item__label--req">真实姓名</view>
+          <view class="form-item__control">
+            <input placeholder="请填写身份证上的姓名" placeholder-class="ph" maxlength="20"
+                   value="{{form.real_name}}" data-key="real_name" bindinput="onInput" />
+          </view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-item__label form-item__label--req">身份证号</view>
+          <view class="form-item__control">
+            <input placeholder="用于认证审核（演示环境）" placeholder-class="ph" maxlength="18"
+                   value="{{form.id_card}}" data-key="id_card" bindinput="onInput" />
+          </view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-item__label form-item__label--req">服务区域</view>
+          <view class="form-item__control">
+            <input placeholder="如：深圳市南山区" placeholder-class="ph" maxlength="50"
+                   value="{{form.region}}" data-key="region" bindinput="onInput" />
+          </view>
+        </view>
+
+        <view class="form-item">
+          <view class="form-item__label">从业年限</view>
+          <view class="form-item__control">
+            <picker range="{{yearsOptions}}" value="{{yearsIndex}}" bindchange="onYearsChange">
+              <view class="wa__picker">{{yearsOptions[yearsIndex]}}</view>
+            </picker>
+          </view>
+        </view>
+      </view>
+
+      <!-- 可接服务类目（多选） -->
+      <view class="card wa__form">
+        <view class="wa__skills-title">
+          <text class="form-item__label form-item__label--req">可接服务类目</text>
+          <text class="wa__skills-count">已选 {{skills.length}} 项</text>
+        </view>
+        <view class="wa__skills">
+          <view class="wa__skill {{item._checked ? 'is-active' : ''}}"
+                wx:for="{{categories}}" wx:key="id"
+                data-id="{{item.id}}" bindtap="toggleSkill">
+            <text class="wa__skill-icon">{{item.icon}}</text>
+            <text class="wa__skill-name">{{item.name}}</text>
+            <text class="wa__skill-check" wx:if="{{item._checked}}">✓</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 个人简介 -->
+      <view class="card wa__form">
+        <view class="form-item form-item--col">
+          <view class="form-item__label">个人简介</view>
+          <view class="form-item__control">
+            <textarea class="wa__textarea" placeholder="介绍下您的经验、擅长领域、服务口碑等（选填）" placeholder-class="ph"
+                      maxlength="300" value="{{form.bio}}" data-key="bio" bindinput="onInput"></textarea>
+          </view>
+        </view>
+      </view>
+
+      <view class="wa__submit-wrap">
+        <button class="btn btn--primary btn--block" disabled="{{submitting}}" bindtap="submit">
+          {{submitting ? '提交中…' : '提交认证'}}
+        </button>
+        <view class="wa__submit-tip">提交后由平台运营审核，通常 1 个工作日内完成。</view>
+      </view>
+    </block>
+  </block>
+</view>
+
+<!-- 订阅消息说明弹窗（docs/changes/008 · 入驻成功节点，7 天频控） -->
+<subscribe-guide wx:if="{{guideVisible}}" mode="modal" bind:done="onGuideDone" />

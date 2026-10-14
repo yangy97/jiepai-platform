@@ -1,0 +1,24 @@
+<!-- components/subscribe-guide —— 订阅消息授权引导（docs/changes/008） -->
+<block wx:if="{{visible}}">
+
+  <!-- 横幅模式：常驻引导（授权成功后页面隐藏） -->
+  <view wx:if="{{mode === 'bar'}}" class="sg-bar">
+    <text class="sg-bar__text">🔔 开启微信通知，派单 / 完工 / 退款实时提醒</text>
+    <view class="sg-bar__btn {{acting ? 'is-acting' : ''}}" bindtap="onEnable">立即开启</view>
+  </view>
+
+  <!-- 弹窗模式：关键节点说明（点遮罩关闭，点按钮授权） -->
+  <view wx:else class="sg-mask" bindtap="onClose">
+    <view class="sg-modal" catchtap="noop">
+      <view class="sg-modal__icon">🔔</view>
+      <view class="sg-modal__title">开启微信通知</view>
+      <view class="sg-modal__desc">派单、完工、退款到账等关键进展，会在微信里实时提醒您，不用一直开着小程序。</view>
+      <view class="sg-modal__tip">一次性授权：每点一次「立即开启」，每个模板可收到 1 条通知</view>
+      <view class="sg-modal__ops">
+        <view class="sg-modal__btn sg-modal__btn--ghost" bindtap="onClose">暂不开启</view>
+        <view class="sg-modal__btn sg-modal__btn--main {{acting ? 'is-acting' : ''}}" bindtap="onEnable">立即开启</view>
+      </view>
+    </view>
+  </view>
+
+</block>
